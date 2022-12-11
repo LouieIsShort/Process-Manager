@@ -68,16 +68,17 @@
             // 
             // RefreshButton
             // 
-            this.RefreshButton.Location = new System.Drawing.Point(687, 329);
+            this.RefreshButton.Location = new System.Drawing.Point(687, 342);
             this.RefreshButton.Name = "RefreshButton";
             this.RefreshButton.Size = new System.Drawing.Size(75, 23);
             this.RefreshButton.TabIndex = 2;
             this.RefreshButton.Text = "Refresh";
             this.RefreshButton.UseVisualStyleBackColor = true;
+            this.RefreshButton.Click += new System.EventHandler(this.RefreshButton_Click);
             // 
             // TerminateProcessButton
             // 
-            this.TerminateProcessButton.Location = new System.Drawing.Point(687, 358);
+            this.TerminateProcessButton.Location = new System.Drawing.Point(687, 371);
             this.TerminateProcessButton.Name = "TerminateProcessButton";
             this.TerminateProcessButton.Size = new System.Drawing.Size(75, 23);
             this.TerminateProcessButton.TabIndex = 1;
@@ -91,7 +92,7 @@
             this.ProcessorDataGrid.GridColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.ProcessorDataGrid.Location = new System.Drawing.Point(7, 7);
             this.ProcessorDataGrid.Name = "ProcessorDataGrid";
-            this.ProcessorDataGrid.ScrollBars = System.Windows.Forms.ScrollBars.None;
+            this.ProcessorDataGrid.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.ProcessorDataGrid.Size = new System.Drawing.Size(674, 387);
             this.ProcessorDataGrid.TabIndex = 0;
             // 
@@ -116,7 +117,7 @@
             "Group processes"});
             this.SettingsCheckBoxes.Location = new System.Drawing.Point(7, 7);
             this.SettingsCheckBoxes.Name = "SettingsCheckBoxes";
-            this.SettingsCheckBoxes.Size = new System.Drawing.Size(755, 175);
+            this.SettingsCheckBoxes.Size = new System.Drawing.Size(755, 61);
             this.SettingsCheckBoxes.TabIndex = 0;
             // 
             // MainWindow
