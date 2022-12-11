@@ -84,15 +84,21 @@
             this.TerminateProcessButton.TabIndex = 1;
             this.TerminateProcessButton.Text = "Terminate";
             this.TerminateProcessButton.UseVisualStyleBackColor = true;
+            this.TerminateProcessButton.Click += new System.EventHandler(this.TerminateProcessButton_Click);
             // 
             // ProcessorDataGrid
             // 
+            this.ProcessorDataGrid.AllowUserToAddRows = false;
+            this.ProcessorDataGrid.AllowUserToDeleteRows = false;
             this.ProcessorDataGrid.BackgroundColor = System.Drawing.SystemColors.ButtonFace;
             this.ProcessorDataGrid.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.ProcessorDataGrid.EditMode = System.Windows.Forms.DataGridViewEditMode.EditProgrammatically;
             this.ProcessorDataGrid.GridColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.ProcessorDataGrid.Location = new System.Drawing.Point(7, 7);
+            this.ProcessorDataGrid.MultiSelect = false;
             this.ProcessorDataGrid.Name = "ProcessorDataGrid";
             this.ProcessorDataGrid.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.ProcessorDataGrid.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.ProcessorDataGrid.Size = new System.Drawing.Size(674, 387);
             this.ProcessorDataGrid.TabIndex = 0;
             // 
@@ -109,6 +115,7 @@
             // 
             // SettingsCheckBoxes
             // 
+            this.SettingsCheckBoxes.CheckOnClick = true;
             this.SettingsCheckBoxes.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.SettingsCheckBoxes.FormattingEnabled = true;
             this.SettingsCheckBoxes.Items.AddRange(new object[] {
@@ -119,6 +126,7 @@
             this.SettingsCheckBoxes.Name = "SettingsCheckBoxes";
             this.SettingsCheckBoxes.Size = new System.Drawing.Size(755, 61);
             this.SettingsCheckBoxes.TabIndex = 0;
+            this.SettingsCheckBoxes.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.SettingsCheckBoxes_ItemCheck);
             // 
             // MainWindow
             // 
@@ -127,11 +135,12 @@
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
             this.ClientSize = new System.Drawing.Size(800, 450);
             this.Controls.Add(this.tabControl1);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "MainWindow";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Process Manager | Main";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainWindow_FormClosing);
             this.Load += new System.EventHandler(this.MainWindow_Load);
             this.tabControl1.ResumeLayout(false);
             this.ProcessesTab.ResumeLayout(false);
