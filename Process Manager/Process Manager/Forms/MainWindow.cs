@@ -16,6 +16,7 @@ namespace Process_Manager.Forms
     {
         public List<Process> Processes = new List<Process>();
         public List<ProcessInformation> ProcessesInformation = new List<ProcessInformation>();
+        public List<ModuleInfo> processModules = new List<ModuleInfo>();
 
         Thread RefreshThread;
         public MainWindow()
@@ -32,44 +33,101 @@ namespace Process_Manager.Forms
         {
             while (true)
             {
-                Task.Delay(500).Wait();
+                Task.Delay(5000).Wait();
                 RefreshProcesses(true, false);
             }
         }
         public void RefreshProcesses(bool WindowOpen, bool IsMainThread)
         {
-            Processes = Process.GetProcesses().ToList<Process>();
-            ProcessesInformation.Clear();
-            foreach (Process process in Processes)
+            if (SettingsCheckBoxes.GetItemChecked(2))
             {
-                ProcessesInformation.Add(new ProcessInformation
+                int oldScroll = 0;
+                if (IsMainThread)
                 {
-                    ProcessName = process.ProcessName,
-                    ProcessStartInfo = process.StartInfo,
-                    ProcessId = process.Id,
-                    Priority = process.BasePriority,
-                    threadNames = process.Threads.ToString()
-                });
-            }
+                    oldScroll = ProcessorDataGrid.FirstDisplayedScrollingRowIndex;
+                    ProcessorDataGrid.DataSource = null;
+                }
+                else
+                {
+                    ProcessorDataGrid.BeginInvoke((MethodInvoker)(() => { oldScroll = ProcessorDataGrid.FirstDisplayedScrollingRowIndex; ProcessorDataGrid.DataSource = null; }));
+                }
 
-            if (!IsMainThread)
-            {
-                ProcessorDataGrid.BeginInvoke((MethodInvoker)(() =>
+                Processes.Clear();
+                Processes = Process.GetProcesses().ToList<Process>();
+                foreach (Process process in Processes)
                 {
+                    processModules.Add(new ModuleInfo 
                     {
-                        int oldScroll = ProcessorDataGrid.FirstDisplayedScrollingRowIndex;
-                        ProcessorDataGrid.DataSource = null;
-                        ProcessorDataGrid.DataSource = ProcessesInformation;
-                        ProcessorDataGrid.FirstDisplayedScrollingRowIndex = WindowOpen == true ? oldScroll : ProcessorDataGrid.FirstDisplayedScrollingRowIndex;
-                    }
-                }));
+                        ModuleName = process.MainModule.ModuleName,
+                        FileName = process.MainModule.FileName,
+                        ModuleMemorySize = process.MainModule.ModuleMemorySize,
+                        BaseAddress = process.MainModule.BaseAddress
+                    });
+                }
+
+                if (!IsMainThread)
+                {
+                    ProcessorDataGrid.BeginInvoke((MethodInvoker)(() =>
+                    {
+                        {
+                            ProcessorDataGrid.DataSource = processModules;
+                            Task.Delay(500).Wait();
+                            ProcessorDataGrid.FirstDisplayedScrollingRowIndex = WindowOpen == true & ProcessesInformation.Count > oldScroll ? oldScroll : ProcessorDataGrid.FirstDisplayedScrollingRowIndex;
+                        }
+                    }));
+                }
+                else
+                {
+                    ProcessorDataGrid.DataSource = processModules;
+                    Task.Delay(250).Wait();
+                    ProcessorDataGrid.FirstDisplayedScrollingRowIndex = WindowOpen == true & ProcessesInformation.Count > oldScroll ? oldScroll : ProcessorDataGrid.FirstDisplayedScrollingRowIndex;
+                }
             }
             else
             {
-                int oldScroll = ProcessorDataGrid.FirstDisplayedScrollingRowIndex;
-                ProcessorDataGrid.DataSource = null;
-                ProcessorDataGrid.DataSource = ProcessesInformation;
-                ProcessorDataGrid.FirstDisplayedScrollingRowIndex = WindowOpen == true ? oldScroll : ProcessorDataGrid.FirstDisplayedScrollingRowIndex;
+                int oldScroll = 0;
+                if (IsMainThread)
+                {
+                    oldScroll = ProcessorDataGrid.FirstDisplayedScrollingRowIndex;
+                    ProcessorDataGrid.DataSource = null;
+                }
+                else
+                {
+                    ProcessorDataGrid.BeginInvoke((MethodInvoker)(() => { oldScroll = ProcessorDataGrid.FirstDisplayedScrollingRowIndex; ProcessorDataGrid.DataSource = null; }));
+                }
+
+                Processes.Clear();
+                Processes = Process.GetProcesses().ToList<Process>();
+                ProcessesInformation.Clear();
+                foreach (Process process in Processes)
+                {
+                    ProcessesInformation.Add(new ProcessInformation
+                    {
+                        ProcessName = process.ProcessName,
+                        ProcessStartInfo = process.StartInfo,
+                        ProcessId = process.Id,
+                        Priority = process.BasePriority,
+                        threadNames = process.Threads.ToString()
+                    });
+                }
+
+                if (!IsMainThread)
+                {
+                    ProcessorDataGrid.BeginInvoke((MethodInvoker)(() =>
+                    {
+                        {
+                            ProcessorDataGrid.DataSource = ProcessesInformation;
+                            Task.Delay(500).Wait();
+                            ProcessorDataGrid.FirstDisplayedScrollingRowIndex = WindowOpen == true & ProcessesInformation.Count > oldScroll ? oldScroll : ProcessorDataGrid.FirstDisplayedScrollingRowIndex;
+                        }
+                    }));
+                }
+                else
+                {
+                    ProcessorDataGrid.DataSource = ProcessesInformation;
+                    Task.Delay(250).Wait();
+                    ProcessorDataGrid.FirstDisplayedScrollingRowIndex = WindowOpen == true & ProcessesInformation.Count > oldScroll ? oldScroll : ProcessorDataGrid.FirstDisplayedScrollingRowIndex;
+                }
             }
         }
 
@@ -142,5 +200,12 @@ namespace Process_Manager.Forms
         public string threadNames { get; set; }
         public int ProcessId { get; set; }
         public int Priority { get; set; }
+    }
+    public class ModuleInfo
+    {
+        public string ModuleName { get; set; }
+        public int ModuleMemorySize { get; set; }
+        public string FileName { get; set; }
+        public IntPtr BaseAddress { get; set; }
     }
 }
