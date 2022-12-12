@@ -9,6 +9,8 @@ using System.Threading.Tasks;
 using System.Threading;
 using System.Windows.Forms;
 using System.Diagnostics;
+using System.Security.Principal;
+using System.Reflection;
 
 namespace Process_Manager.Forms
 {
